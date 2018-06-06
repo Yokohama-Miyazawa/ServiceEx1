@@ -1,13 +1,19 @@
 package jp.ac.titech.itpro.sdl.serviceex1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
+    IntentFilter intentFilter;
+    MainActBroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +21,16 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate in " + Thread.currentThread());
         setContentView(R.layout.activity_main);
 
+        receiver = new MainActBroadcastReceiver();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("MAIN_ACTION");
+        registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     public void pressTest1(View v) {
@@ -23,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pressTest2(View v) {
         testService2();
+    }
+
+    public void pressTest3(View v) {
+        testService3();
     }
 
     private void testService1() {
@@ -36,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "testService2 in " + Thread.currentThread());
         Intent intent = new Intent(this, TestService2.class);
         intent.putExtra(TestService2.EXTRA_MYARG, "Hello, Service2");
+        startService(intent);
+    }
+
+    private void testService3() {
+        Log.d(TAG, "testService3 in " + Thread.currentThread());
+        Intent intent = new Intent(this, TestService3.class);
+        intent.putExtra(TestService3.EXTRA_MYARG, "Hello, Service3");
         startService(intent);
     }
 
